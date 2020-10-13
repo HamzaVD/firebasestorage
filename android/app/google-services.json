@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "125238688136",
+    "firebase_url": "https://fir-storage-f8a01.firebaseio.com",
+    "project_id": "fir-storage-f8a01",
+    "storage_bucket": "fir-storage-f8a01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125238688136:android:0bd34762fae08274d8a23d",
+        "android_client_info": {
+          "package_name": "com.venturedive.firebasestorage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "125238688136-ermjkvei5h8dugofgpiqb5if85330e2o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3J173c2J8xp97Zq_MzZ5oNZZ8SOu_Amo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "125238688136-ermjkvei5h8dugofgpiqb5if85330e2o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
