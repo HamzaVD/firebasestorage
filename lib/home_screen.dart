@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -12,6 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String imageUrl;
   @override
   void initState() {
     super.initState();
@@ -21,31 +23,51 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Firebase Storage')),
-      body: Column(
+      body: ListView(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FlatButton(
-                color: Colors.blue,
-                child: Text("Upload!"),
-                onPressed: () async {
-                  try {
-                    File _file = File(
-                        'assets/travel1.jpg'); // rootBundle.load('assets/travel1.jpg') as File;
-                    StorageReference ref =
-                        FirebaseStorage.instance.ref().child('travel');
-                    StorageUploadTask uploadTask = ref.putFile(
-                        _file, StorageMetadata(contentType: 'image/png'));
-                    StorageTaskSnapshot lastSnapshot =
-                        await uploadTask.onComplete;
-                    return await lastSnapshot.ref.getDownloadURL();
-                  } catch (e) {
-                    print(e.toString());
-                  }
-                }),
+          imageUrl != null
+              ? Image.network(imageUrl)
+              : Placeholder(
+                  fallbackHeight: 200.0, fallbackWidth: double.infinity),
+          SizedBox(
+            height: 20,
           ),
+          RaisedButton(
+            onPressed: () => _uploadImage(),
+            color: Colors.lightBlue,
+            child: Text('Upload image'),
+          )
         ],
       ),
     );
+  }
+
+  _uploadImage() async {
+    final _storage = FirebaseStorage.instance;
+    final _picker = ImagePicker();
+    PickedFile image;
+
+    // Check Permissions
+    await Permission.photos.request();
+    var permissionStatus = await Permission.photos.status;
+    if (permissionStatus.isGranted) {
+      // select Image
+      image = await _picker.getImage(source: ImageSource.gallery);
+      var file = File(image.path);
+      if (image != null) {
+        // upload to Firebase
+        var now = new DateTime.now();
+        var snapshot =
+            await _storage.ref().child('profile/$now').putFile(file).onComplete;
+        var downloadUrl = await snapshot.ref.getDownloadURL();
+        setState(() {
+          imageUrl = downloadUrl;
+        });
+      } else {
+        print('No path received');
+      }
+    } else {
+      print('Grant Permissions and try again!');
+    }
   }
 }
